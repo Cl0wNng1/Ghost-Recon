@@ -1,0 +1,24 @@
+# payloads/gf_patterns.yml
+# Deep param analysis mapping parameters to vulnerabilities and their response indicators
+
+xss:
+  params: ["q", "search", "query", "s", "keyword", "term", "name", "value", "input", "redirect", "url", "return", "next", "callback", "msg", "message", "error", "text", "content", "title", "body", "comment", "description"]
+  indicators: ["<", ">", "onerror", "onload", "javascript:", "alert(", "prompt("]
+sqli:
+  params: ["id", "user_id", "uid", "pid", "item", "cat", "catid", "order", "sort", "page", "dir", "search", "query", "q", "filter", "from", "to", "year", "month", "day", "date"]
+  indicators: ["sql syntax", "mysql_fetch", "unclosed quotation", "ORA-", "pg_query", "sqlite3", "SQLSTATE", "PDOException", "Syntax error"]
+ssrf:
+  params: ["url", "uri", "path", "redirect", "next", "target", "dest", "link", "fetch", "load", "file", "page", "site", "src", "href", "img", "image", "webhook", "api_url"]
+  indicators: ["ListBucketResult", "computeMetadata", "uid=", "root:x:0:0"]
+redirect:
+  params: ["url", "redirect", "return", "next", "redir", "redirect_uri", "continue", "dest", "destination", "go", "target", "out", "view", "login_url", "logout", "return_to", "returnTo", "forward", "state"]
+  indicators: []
+lfi:
+  params: ["file", "path", "page", "include", "template", "doc", "dir", "folder", "root", "pg", "style", "pdf", "lang", "view", "content", "require", "load"]
+  indicators: ["root:x:0:0", "daemon:x", "boot loader", "[extensions]", "<?php"]
+idor:
+  params: ["id", "user_id", "uid", "pid", "account_id", "order_id", "invoice_id", "profile_id", "doc_id", "email", "username", "token", "key"]
+  indicators: []
+rce:
+  params: ["cmd", "exec", "command", "execute", "ping", "query", "code", "eval", "run", "root", "cli"]
+  indicators: ["uid=", "groups=", "Volume in drive", "bytes from"]

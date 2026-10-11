@@ -1,0 +1,55 @@
+# payloads/takeover.yml
+# Unified mapping of vulnerable CNAMEs to exact HTTP response fingerprints
+
+services:
+  github:
+    cnames: ["\\.github\\.io"]
+    fingerprint: "There isn't a GitHub Pages site here"
+  heroku:
+    cnames: ["\\.herokuapp\\.com"]
+    fingerprint: "No such app"
+  s3_bucket:
+    cnames: ["\\.amazonaws\\.com"]
+    fingerprint: "The specified bucket does not exist"
+  zendesk:
+    cnames: ["\\.zendesk\\.com"]
+    fingerprint: "Help Center Closed"
+  fastly:
+    cnames: ["\\.fastly\\.net"]
+    fingerprint: "Fastly error: unknown domain"
+  pantheon:
+    cnames: ["\\.pantheonsite\\.io"]
+    fingerprint: "The darnedest thing"
+  shopify:
+    cnames: ["\\.myshopify\\.com"]
+    fingerprint: "Sorry, this shop is currently unavailable."
+  tumblr:
+    cnames: ["\\.tumblr\\.com"]
+    fingerprint: "Whatever you were looking for doesn't currently exist at this address"
+  wordpress:
+    cnames: ["\\.wordpress\\.com"]
+    fingerprint: "Do you want to register"
+  wpengine:
+    cnames: ["\\.wpengine\\.com"]
+    fingerprint: "This site has been successfully routed to WP Engine"
+  surge:
+    cnames: ["\\.surge\\.sh"]
+    fingerprint: "project not found"
+  azure:
+    cnames: ["\\.azurewebsites\\.net", "\\.cloudapp\\.net", "\\.trafficmanager\\.net"]
+    fingerprint: "404 Web Site not found"
+  readme:
+    cnames: ["\\.readme\\.io"]
+    fingerprint: "Project doesnt exist... yet!"
+  firebase:
+    cnames: ["\\.web\\.app", "\\.firebaseapp\\.com"]
+    fingerprint: "Site Not Found"
+  ghost:
+    cnames: ["\\.ghost\\.io"]
+    fingerprint: "The thing you were looking for is no longer here"
+  unbounce:
+    cnames: ["\\.unbouncepages\\.com"]
+    fingerprint: "The requested page was not found"
+  help_scout:
+    cnames: ["\\.helpscoutdocs\\.com"]
+    fingerprint: "No settings were found for this company"

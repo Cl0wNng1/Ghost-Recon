@@ -1,0 +1,29 @@
+# Ghost v2.0 engagement config. Any Config field is accepted; CLI flags override.
+# Copy to engagement.local.yml (git-ignored) before adding real credentials.
+url: "*.example.com"
+stealth: high
+formats: [html, json, md, sarif]
+fail_on: HIGH
+
+# Scope — deny always wins; private ranges are blocked unless allow-listed.
+scope_file: examples/scope.example.txt
+deny_hosts: ["status.example.com"]
+scope_enforce: true
+
+# Authenticated scanning (prefer env vars for secrets:
+#   GHOST_AUTH_BEARER / GHOST_AUTH_COOKIE / GHOST_AUTH_PASSWORD)
+auth_mode: form
+auth_login_url: https://app.example.com/login
+auth_username: pentest-user-a
+auth_user_field: email
+auth_pass_field: password
+auth_verify_url: https://app.example.com/account
+auth_success_markers: ["Sign out"]
+
+# Access-control diffing: lower rank = less privilege.
+authz_roles:
+  anon:   {}
+  userA:  {cookie: "session=REPLACE_ME", rank: 1}
+  userB:  {cookie: "session=REPLACE_ME", rank: 1}
+  admin:  {bearer: "REPLACE_ME", rank: 10}
+authz_max_endpoints: 200
