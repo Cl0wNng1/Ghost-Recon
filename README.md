@@ -52,7 +52,7 @@ Everything it finds goes into a SQLite database, so a scan can be interrupted an
 **Requirements:** Python 3.10+, Go 1.21+ for the external tools, and Linux or macOS.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/ghost-recon.git
+git clone https://github.com/Cl0wNng1/ghost-recon.git
 cd ghost-recon
 
 # Python deps only (enough for the built-in engine, reports and tests)
